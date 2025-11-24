@@ -46,30 +46,51 @@ class Game
 
   def start
     puts 'New game started.'
+    play
+  end
 
-    until winner || turn_count >= 9
-      current_player = turn_count.even? ? player1 : player2
-      board.display
-      puts "#{current_player.name}, it's your turn."
+  def current_player
+    turn_count.even? ? player1 : player2
+  end
 
-      players_input = nil
-      loop do
-        players_input = gets.chomp.to_i
-        break if valid_input?(players_input)
+  def players_input
+    players_input = nil
+    loop do
+      players_input = gets.chomp.to_i
+      break if valid_input?(players_input)
 
-        puts 'Invalid input! Please enter a number between 0-8 for an empty space.'
-      end
-
-      board.grid[players_input] = current_player.marker
-      self.winner = check_winner
-      self.turn_count += 1
+      puts 'Invalid input! Please enter a number between 0-8 for an empty space.'
     end
+    players_input
+  end
 
+  def update_board(square)
+    board.grid[square] = current_player.marker
+  end
+
+  def display_turn
+    puts "#{current_player.name}, it's your turn."
+  end
+
+  def gameover
     if winner
       stop
     else
       tied
     end
+  end
+
+  def play
+    until winner || turn_count >= 9
+      board.display
+      display_turn
+      input = players_input
+      update_board(input)
+      self.winner = check_winner
+      self.turn_count += 1
+    end
+
+    gameover
   end
 
   def stop
