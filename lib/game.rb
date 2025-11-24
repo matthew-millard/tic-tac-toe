@@ -40,6 +40,10 @@ class Game
     nil
   end
 
+  def valid_input?(input)
+    input.between?(0, 8) && board.grid[input].strip.empty?
+  end
+
   def start
     puts 'New game started.'
 
@@ -47,7 +51,15 @@ class Game
       current_player = turn_count.even? ? player1 : player2
       board.display
       puts "#{current_player.name}, it's your turn."
-      players_input = gets.chomp.to_i
+
+      players_input = nil
+      loop do
+        players_input = gets.chomp.to_i
+        break if valid_input?(players_input)
+
+        puts 'Invalid input! Please enter a number between 0-8 for an empty space.'
+      end
+
       board.grid[players_input] = current_player.marker
       self.winner = check_winner
       self.turn_count += 1
